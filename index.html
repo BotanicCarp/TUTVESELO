@@ -157,9 +157,36 @@ Kaspi:
 </div>
 
 
-<script>
+<script type="module">
 
-let data = JSON.parse(localStorage.getItem("kassa")) || {
+import { initializeApp } from "firebase/app";
+
+import { 
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc
+} from "firebase/firestore";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCpKl4I1rEvICuzYu4z0PWhAaGWbp6pdk0",
+  authDomain: "kassa-prokat.firebaseapp.com",
+  projectId: "kassa-prokat",
+  storageBucket: "kassa-prokat.firebasestorage.app",
+  messagingSenderId: "768484414005",
+  appId: "1:768484414005:web:4446da880b4e6dd98e577c",
+  measurementId: "G-KM4JQRCWJZ"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+let data = {
 
 total:0,
 kaspi:0,
@@ -175,7 +202,10 @@ let service="";
 let payment="";
 
 
-function selectService(x){
+
+// выбор услуги
+
+window.selectService = function(x){
 
 service=x;
 
@@ -191,9 +221,12 @@ if(x=="Машинки"){
 [500,1000,1500,2000].forEach(v=>{
 
 html+=`
+
 <button class="price" onclick="add(${v})">
 +${v}
-</button>`;
+</button>
+
+`;
 
 });
 
@@ -204,9 +237,12 @@ else{
 [1000,2000,3000].forEach(v=>{
 
 html+=`
+
 <button class="price" onclick="add(${v})">
 +${v}
-</button>`;
+</button>
+
+`;
 
 });
 
@@ -219,7 +255,9 @@ document.getElementById("buttons").innerHTML=html;
 
 
 
-function selectPay(x){
+// выбор оплаты
+
+window.selectPay=function(x){
 
 payment=x;
 
@@ -230,7 +268,9 @@ document.getElementById("payment").innerHTML=
 
 
 
-function add(sum){
+// добавление денег
+
+window.add = async function(sum){
 
 
 if(!service || !payment){
@@ -242,22 +282,22 @@ return;
 }
 
 
-data.total+=sum;
+data.total += sum;
 
 
 if(payment=="Kaspi")
-data.kaspi+=sum;
+data.kaspi += sum;
 
 else
-data.cash+=sum;
+data.cash += sum;
 
 
 
 if(service=="Машинки")
-data.cars+=sum;
+data.cars += sum;
 
 else
-data.tubes+=sum;
+data.tubes += sum;
 
 
 
@@ -269,18 +309,46 @@ data.history.unshift(
 );
 
 
-save();
+
+// сохраняем в Firebase
+
+await setDoc(
+doc(db,"kassa","today"),
+data
+);
+
+
+updateScreen();
 
 }
 
 
 
-function save(){
 
-localStorage.setItem(
-"kassa",
-JSON.stringify(data)
+// загрузка из Firebase
+
+async function load(){
+
+const result = await getDoc(
+doc(db,"kassa","today")
 );
+
+
+if(result.exists()){
+
+data=result.data();
+
+}
+
+
+updateScreen();
+
+}
+
+
+
+
+function updateScreen(){
 
 
 document.getElementById("total").innerHTML=data.total;
@@ -300,7 +368,8 @@ data.history.join("<br><br>");
 }
 
 
-save();
+
+load();
 
 
 </script>
