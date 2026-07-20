@@ -1,382 +1,139 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Касса проката "Тут Весело"</title>
 
-<title>Касса проката Тут Весело</title>
-
-<style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f2f3f5;
-    padding:15px;
-}
-
-h1{
-    text-align:center;
-}
-
-.card{
-    background:white;
-    padding:15px;
-    border-radius:15px;
-    margin-bottom:15px;
-}
-
-button{
-    width:45%;
-    padding:15px;
-    margin:5px;
-    border:none;
-    border-radius:12px;
-    font-size:18px;
-    cursor:pointer;
-}
-
-.service{
-    background:#2196f3;
-    color:white;
-}
-
-.price{
-    background:#4caf50;
-    color:white;
-}
-
-.pay{
-    background:#ff9800;
-    color:white;
-}
-
-.stat{
-    font-size:20px;
-    line-height:1.8;
-}
-
-.history{
-    max-height:250px;
-    overflow:auto;
-}
-</style>
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>🎿 Касса проката Тут Весело</h1>
+<div class="container">
 
+    <header class="header">
+        <h1>🎿 Тут Весело</h1>
+        <p>Касса проката</p>
+    </header>
 
-<div class="card">
+    <!-- Машинки -->
+    <section class="card">
 
-<h2>Выберите услугу</h2>
+        <h2>🚗 Машинки</h2>
 
-<button class="service" onclick="selectService('Машинки')">
-🚗 Машинки
-</button>
+        <div class="buttons">
 
-<button class="service" onclick="selectService('Тюбинг')">
-🛷 Тюбинг
-</button>
+            <button class="price" data-service="Машинки" data-price="500">500 ₸</button>
 
-<p id="service">
-Услуга не выбрана
-</p>
+            <button class="price" data-service="Машинки" data-price="1000">1000 ₸</button>
+
+            <button class="price" data-service="Машинки" data-price="1500">1500 ₸</button>
+
+            <button class="price" data-service="Машинки" data-price="2000">2000 ₸</button>
+
+        </div>
+
+    </section>
+
+    <!-- Тюбинг -->
+
+    <section class="card">
+
+        <h2>🛷 Тюбинг</h2>
+
+        <div class="buttons">
+
+            <button class="price" data-service="Тюбинг" data-price="1000">1000 ₸</button>
+
+            <button class="price" data-service="Тюбинг" data-price="2000">2000 ₸</button>
+
+            <button class="price" data-service="Тюбинг" data-price="3000">3000 ₸</button>
+
+        </div>
+
+    </section>
+
+    <!-- Оплата -->
+
+    <section class="card">
+
+        <h2>Способ оплаты</h2>
+
+        <div class="buttons">
+
+            <button id="kaspiBtn" class="pay active">
+                💳 Kaspi
+            </button>
+
+            <button id="cashBtn" class="pay">
+                💵 Наличные
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- Статистика -->
+
+    <section class="card">
+
+        <h2>Сегодня</h2>
+
+        <div class="stats">
+
+            <div>
+                <span>Общая сумма</span>
+                <strong id="total">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>Kaspi</span>
+                <strong id="kaspi">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>Наличные</span>
+                <strong id="cash">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>🚗 Машинки</span>
+                <strong id="cars">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>🛷 Тюбинг</span>
+                <strong id="tubes">0 ₸</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- История -->
+
+    <section class="card">
+
+        <h2>Последние операции</h2>
+
+        <div id="history" class="history">
+
+            Пока нет операций
+
+        </div>
+
+    </section>
+    <section class="card">
+
+    <button id="undoBtn" class="undo">
+        ↩️ Отменить последнюю операцию
+    </button>
+
+</section>
 
 </div>
 
-
-<div class="card">
-
-<h2>Оплата</h2>
-
-<button class="pay" onclick="selectPay('Kaspi')">
-💳 Kaspi
-</button>
-
-<button class="pay" onclick="selectPay('Наличка')">
-💵 Наличка
-</button>
-
-<p id="payment">
-Оплата не выбрана
-</p>
-
-</div>
-
-
-<div class="card">
-
-<h2>Сумма</h2>
-
-<div id="buttons"></div>
-
-</div>
-
-
-<div class="card stat">
-
-<h2>Сегодня</h2>
-
-<p>
-Всего:
-<span id="total">0</span> ₸
-</p>
-
-<p>
-Kaspi:
-<span id="kaspi">0</span> ₸
-</p>
-
-<p>
-Наличка:
-<span id="cash">0</span> ₸
-</p>
-
-<p>
-🚗 Машинки:
-<span id="cars">0</span> ₸
-</p>
-
-<p>
-🛷 Тюбинг:
-<span id="tubes">0</span> ₸
-</p>
-
-</div>
-
-
-<div class="card">
-
-<h2>История</h2>
-
-<div class="history" id="history">
-
-</div>
-
-</div>
-
-
-<script type="module">
-
-import { initializeApp } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-
-import { 
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc
-} 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCpKl4I1rEvICuzYu4z0PWhAaGWbp6pdk0",
-  authDomain: "kassa-prokat.firebaseapp.com",
-  projectId: "kassa-prokat",
-  storageBucket: "kassa-prokat.firebasestorage.app",
-  messagingSenderId: "768484414005",
-  appId: "1:768484414005:web:4446da880b4e6dd98e577c",
-  measurementId: "G-KM4JQRCWJZ"
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-
-
-let data = {
-
-total:0,
-kaspi:0,
-cash:0,
-cars:0,
-tubes:0,
-history:[]
-
-};
-
-
-let service="";
-let payment="";
-
-
-
-// выбор услуги
-
-window.selectService = function(x){
-
-service=x;
-
-document.getElementById("service").innerHTML=
-"Выбрано: "+x;
-
-
-let html="";
-
-
-if(x=="Машинки"){
-
-[500,1000,1500,2000].forEach(v=>{
-
-html+=`
-
-<button class="price" onclick="add(${v})">
-+${v}
-</button>
-
-`;
-
-});
-
-}
-
-else{
-
-[1000,2000,3000].forEach(v=>{
-
-html+=`
-
-<button class="price" onclick="add(${v})">
-+${v}
-</button>
-
-`;
-
-});
-
-}
-
-
-document.getElementById("buttons").innerHTML=html;
-
-}
-
-
-
-// выбор оплаты
-
-window.selectPay=function(x){
-
-payment=x;
-
-document.getElementById("payment").innerHTML=
-"Выбрано: "+x;
-
-}
-
-
-
-// добавление денег
-
-window.add = async function(sum){
-
-
-if(!service || !payment){
-
-alert("Выберите услугу и оплату");
-
-return;
-
-}
-
-
-data.total += sum;
-
-
-if(payment=="Kaspi")
-data.kaspi += sum;
-
-else
-data.cash += sum;
-
-
-
-if(service=="Машинки")
-data.cars += sum;
-
-else
-data.tubes += sum;
-
-
-
-let time=new Date().toLocaleTimeString();
-
-
-data.history.unshift(
-`${time} | ${service} | ${payment} | ${sum} ₸`
-);
-
-
-
-// сохраняем в Firebase
-
-await setDoc(
-doc(db,"kassa","today"),
-data
-);
-
-
-updateScreen();
-
-}
-
-
-
-
-// загрузка из Firebase
-
-async function load(){
-
-const result = await getDoc(
-doc(db,"kassa","today")
-);
-
-
-if(result.exists()){
-
-data=result.data();
-
-}
-
-
-updateScreen();
-
-}
-
-
-
-
-function updateScreen(){
-
-
-document.getElementById("total").innerHTML=data.total;
-
-document.getElementById("kaspi").innerHTML=data.kaspi;
-
-document.getElementById("cash").innerHTML=data.cash;
-
-document.getElementById("cars").innerHTML=data.cars;
-
-document.getElementById("tubes").innerHTML=data.tubes;
-
-
-document.getElementById("history").innerHTML=
-data.history.join("<br><br>");
-
-}
-
-
-
-load();
-
-
-</script>
-
-
+<script type="module" src="app.js"></script>
 </body>
 </html>
