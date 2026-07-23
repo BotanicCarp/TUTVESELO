@@ -27,19 +27,31 @@ const salesRef = collection(db, "sales");
 
 let sales = [];
 
+// ==============================
+// Выбор способа оплаты
+// ==============================
+
 kaspiBtn.addEventListener("click", () => {
+
     payment = "Kaspi";
 
     kaspiBtn.classList.add("active");
     cashBtn.classList.remove("active");
+
 });
 
 cashBtn.addEventListener("click", () => {
+
     payment = "Наличные";
 
     cashBtn.classList.add("active");
     kaspiBtn.classList.remove("active");
+
 });
+
+// ==============================
+// Добавление продажи
+// ==============================
 
 document.querySelectorAll(".price").forEach(button => {
 
@@ -48,11 +60,8 @@ document.querySelectorAll(".price").forEach(button => {
         await addDoc(salesRef, {
 
             service: button.dataset.service,
-
             amount: Number(button.dataset.price),
-
             payment: payment,
-
             created: serverTimestamp()
 
         });
@@ -61,7 +70,16 @@ document.querySelectorAll(".price").forEach(button => {
 
 });
 
-onSnapshot(salesRef, (snapshot) => {
+// ==============================
+// Получение данных
+// ==============================
+
+const q = query(
+    salesRef,
+    orderBy("created", "desc")
+);
+
+onSnapshot(q, snapshot => {
 
     sales = [];
 
@@ -77,7 +95,18 @@ onSnapshot(salesRef, (snapshot) => {
     render();
 
 });
+
+// ==============================
+// Основной рендер
+// ==============================
+
 function render() {
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate()+1);
 
     let totalSum = 0;
     let kaspiSum = 0;
@@ -85,47 +114,33 @@ function render() {
     let carsSum = 0;
     let tubesSum = 0;
 
-    history.innerHTML = "";
+    const todaySales = sales.filter(item => {
 
-    if (sales.length === 0) {
-        history.innerHTML = "Пока нет операций";
-    }
+        if(!item.created?.toDate) return false;
 
-    sales.forEach(item => {
+        const d = item.created.toDate();
+
+        return d >= today && d < tomorrow;
+
+    });
+
+    todaySales.forEach(item => {
 
         totalSum += item.amount;
 
-        if (item.payment === "Kaspi")
+        if(item.payment === "Kaspi"){
             kaspiSum += item.amount;
-        else
+        }else{
             cashSum += item.amount;
-
-        if (item.service === "Машинки")
-            carsSum += item.amount;
-        else
-            tubesSum += item.amount;
-
-        const div = document.createElement("div");
-        div.className = "history-item";
-
-        let time = "";
-
-        if (item.created?.toDate) {
-            time = item.created.toDate().toLocaleTimeString("ru-RU");
         }
 
-        div.innerHTML = `
-            <b>${time}</b><br>
-            ${item.service}<br>
-            ${item.payment}<br>
-            <b>${item.amount} ₸</b>
-            <br><br>
-            <button class="delete" data-id="${item.id}">
-                🗑 Удалить
-            </button>
-        `;
+        if(item.service === "Машинки"){
+            carsSum += item.amount;
+        }
 
-        history.appendChild(div);
+        if(item.service === "Тюбинг"){
+            tubesSum += item.amount;
+        }
 
     });
 
@@ -134,6 +149,101 @@ function render() {
     cash.textContent = cashSum + " ₸";
     cars.textContent = carsSum + " ₸";
     tubes.textContent = tubesSum + " ₸";
+
+    history.innerHTML = "";
+
+    if(sales.length===0){
+
+        history.innerHTML="Пока нет операций";
+
+        return;
+
+    }
+    // ==============================
+    // История операций
+    // ==============================
+
+    let currentGroup = "";
+
+    sales.forEach(item => {
+
+        const div = document.createElement("div");
+        div.className = "history-item";
+
+        let dateText = "";
+        let timeText = "";
+        let group = "Без даты";
+
+        if (item.created?.toDate) {
+
+            const d = item.created.toDate();
+
+            dateText = d.toLocaleDateString("ru-RU");
+            timeText = d.toLocaleTimeString("ru-RU");
+
+            const itemDate = new Date(d);
+            itemDate.setHours(0,0,0,0);
+
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate()-1);
+
+            if(itemDate.getTime() === today.getTime()){
+                group = "📅 Сегодня";
+            }
+            else if(itemDate.getTime() === yesterday.getTime()){
+                group = "📅 Вчера";
+            }
+            else{
+                group = "📅 " + dateText;
+            }
+
+        }
+
+        if(group !== currentGroup){
+
+            currentGroup = group;
+
+            const title = document.createElement("h3");
+            title.className = "history-group";
+            title.textContent = group;
+
+            history.appendChild(title);
+
+        }
+
+        div.innerHTML = `
+            <div class="history-top">
+
+                <strong>${item.service}</strong>
+
+                <strong>${item.amount} ₸</strong>
+
+            </div>
+
+            <div class="history-payment">
+
+                ${item.payment === "Kaspi" ? "💳 Kaspi" : "💵 Наличные"}
+
+            </div>
+
+            <div class="history-time">
+
+                🕒 ${timeText}
+
+            </div>
+
+            <br>
+
+            <button
+                class="delete"
+                data-id="${item.id}">
+                🗑 Удалить
+            </button>
+        `;
+
+        history.appendChild(div);
+
+    });
 
     document.querySelectorAll(".delete").forEach(btn => {
 
@@ -147,7 +257,8 @@ function render() {
 
     });
 
-}// ==============================
+}
+// ==============================
 // Отмена последней операции
 // ==============================
 
@@ -166,35 +277,68 @@ async function undoLastSale() {
 
     try {
 
-        // Благодаря сортировке orderBy("created", "desc")
-        // первая запись всегда самая последняя
-        await deleteDoc(doc(db, "sales", sales[0].id));
+        await deleteDoc(
+            doc(db, "sales", sales[0].id)
+        );
 
     } catch (error) {
 
-    console.error(error);
+        console.error(error);
 
-    alert(
-        error.code + "\n\n" +
-        error.message
-    );
+        alert(
+            error.code +
+            "\n\n" +
+            error.message
+        );
 
-}
+    }
 
 }
 
 // ==============================
-// Очистка истории (необязательно)
+// Очистка всей истории
 // ==============================
 
 window.clearAllSales = async function () {
 
-    if (sales.length === 0) return;
+    if (sales.length === 0) {
+        alert("История уже пустая");
+        return;
+    }
 
-    if (!confirm("Удалить ВСЮ историю?")) return;
+    if (!confirm("Удалить всю историю?")) {
+        return;
+    }
 
-    for (const sale of sales) {
-        await deleteDoc(doc(db, "sales", sale.id));
+    try {
+
+        for (const sale of sales) {
+
+            await deleteDoc(
+                doc(db, "sales", sale.id)
+            );
+
+        }
+
+        alert("История очищена");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(error.message);
+
     }
 
 };
+
+// ==============================
+// Автоматическое обновление
+// статистики после полуночи
+// ==============================
+
+setInterval(() => {
+
+    render();
+
+}, 60000);
