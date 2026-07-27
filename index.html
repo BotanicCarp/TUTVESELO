@@ -26,21 +26,7 @@
     </div>
 
 </header>
-<nav class="menu">
 
-    <button id="cashPage" class="menu-btn active">
-        🏠 Касса
-    </button>
-
-    <button id="reportPage" class="menu-btn">
-        📊 Отчёты
-    </button>
-
-    <button id="analyticsPage" class="menu-btn">
-        📈 Аналитика
-    </button>
-
-</nav>
 <div id="cashScreen">
     <!-- Машинки -->
     <section class="card">
@@ -107,51 +93,56 @@
 
     <!-- Статистика -->
 
-    <section class="card">
 
-        <h2>Сегодня</h2>
+<section class="card">
 
-        <div class="stats">
+    <h2>💰 Сегодня</h2>
 
-            <div>
-                <span>Общая сумма</span>
-                <strong id="total">0 ₸</strong>
-            </div>
+    <div class="stats">
 
-            <div>
-                <span>Kaspi</span>
-                <strong id="kaspi">0 ₸</strong>
-            </div>
+        <div class="full">
+            <span>💰 Общая сумма</span>
+            <strong id="total">0 ₸</strong>
+        </div>
 
-            <div>
-                <span>Наличные</span>
-                <strong id="cash">0 ₸</strong>
-            </div>
+        <div>
+            <span>💳 Kaspi</span>
+            <strong id="kaspi">0 ₸</strong>
+        </div>
 
-            <div>
-                <span>🚗 Машинки</span>
-                <strong id="cars">0 ₸</strong>
-            </div>
-            <div>
-    <span>🛷 Тюбинг</span>
-    <strong id="tubes">0 ₸</strong>
-</div>
+        <div>
+            <span>💵 Наличные</span>
+            <strong id="cash">0 ₸</strong>
+        </div>
 
-<div>
-    <span>💰 Зарплата машинки 20%</span>
-    <strong id="carSalary">0 ₸</strong>
-</div>
+        <div>
+            <span>🚗 Машинки</span>
+            <strong id="cars">0 ₸</strong>
+        </div>
 
-<div>
-    <span>💰 Зарплата тюбинг 15%</span>
-    <strong id="tubeSalary">0 ₸</strong>
-</div>
+        <div>
+            <span>🛷 Тюбинг</span>
+            <strong id="tubes">0 ₸</strong>
+        </div>
 
-<div>
-    <span>💵 Общая зарплата</span>
-    <strong id="totalSalary">0 ₸</strong>
-</div>
+        <div>
+            <span>💰 Зарплата машинки</span>
+            <strong id="carSalary">0 ₸</strong>
+        </div>
 
+        <div>
+            <span>💰 Зарплата тюбинг</span>
+            <strong id="tubeSalary">0 ₸</strong>
+        </div>
+
+        <div class="full">
+            <span>💵 Общая зарплата</span>
+            <strong id="totalSalary">0 ₸</strong>
+        </div>
+
+    </div>
+
+</section>
 
     </section>
 
@@ -194,43 +185,44 @@
 
         <div class="stats">
 
-            <div>
-                <span>Общая сумма</span>
-                <strong id="reportTotal">0 ₸</strong>
-            </div>
-
-            <div>
-                <span>Kaspi</span>
-                <strong id="reportKaspi">0 ₸</strong>
-            </div>
-
-            <div>
-                <span>Наличные</span>
-                <strong id="reportCash">0 ₸</strong>
-            </div>
-
-            <div>
-                <span>🚗 Машинки</span>
-                <strong id="reportCars">0 ₸</strong>
-            </div>
-
-            <div>
-                <span>🛷 Тюбинг</span>
-                <strong id="reportTubes">0 ₸</strong>
-            </div>
-           <div>
-    <span>💰 Зарплата машинки 20%</span>
-    <strong id="carSalary">0 ₸</strong>
+            <div class="full">
+    <span>💰 Общая сумма</span>
+    <strong id="reportTotal">0 ₸</strong>
 </div>
 
 <div>
-    <span>💰 Зарплата тюбинг 15%</span>
-    <strong id="tubeSalary">0 ₸</strong>
+    <span>💳 Kaspi</span>
+    <strong id="reportKaspi">0 ₸</strong>
 </div>
 
 <div>
+    <span>💵 Наличные</span>
+    <strong id="reportCash">0 ₸</strong>
+</div>
+
+<div>
+    <span>🚗 Машинки</span>
+    <strong id="reportCars">0 ₸</strong>
+</div>
+
+<div>
+    <span>🛷 Тюбинг</span>
+    <strong id="reportTubes">0 ₸</strong>
+</div>
+
+<div>
+    <span>💰 Зарплата машинки</span>
+    <strong id="reportCarSalary">0 ₸</strong>
+</div>
+
+<div>
+    <span>💰 Зарплата тюбинг</span>
+    <strong id="reportTubeSalary">0 ₸</strong>
+</div>
+
+<div class="full">
     <span>💵 Общая зарплата</span>
-    <strong id="totalSalary">0 ₸</strong>
+    <strong id="reportTotalSalary">0 ₸</strong>
 </div>
     </section>
 
@@ -275,5 +267,32 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="app.js"></script>
+<nav class="bottom-nav">
+
+    <button id="cashPage" class="nav-btn active">
+
+        <span class="icon">🏠</span>
+
+        <span>Касса</span>
+
+    </button>
+
+    <button id="reportPage" class="nav-btn">
+
+        <span class="icon">📊</span>
+
+        <span>Отчёты</span>
+
+    </button>
+
+    <button id="analyticsPage" class="nav-btn">
+
+        <span class="icon">📈</span>
+
+        <span>Аналитика</span>
+
+    </button>
+
+</nav>
 </body>
 </html>

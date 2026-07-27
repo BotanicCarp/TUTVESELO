@@ -402,19 +402,23 @@ cashPage.onclick = () => {
 
     cashScreen.style.display = "block";
     reportScreen.style.display = "none";
+    analyticsScreen.style.display = "none";
 
     cashPage.classList.add("active");
     reportPage.classList.remove("active");
+    analyticsPage.classList.remove("active");
 
-};
+};;
 
 reportPage.onclick = () => {
 
     cashScreen.style.display = "none";
     reportScreen.style.display = "block";
+    analyticsScreen.style.display = "none";
 
     reportPage.classList.add("active");
     cashPage.classList.remove("active");
+    analyticsPage.classList.remove("active");
 
     const today = new Date();
     reportDate.value = today.toISOString().split("T")[0];
@@ -422,6 +426,7 @@ reportPage.onclick = () => {
     loadReport(reportDate.value);
 
 };
+
 analyticsPage.onclick = () => {
 
     cashScreen.style.display = "none";
@@ -648,5 +653,16 @@ function drawCharts() {
         }
 
     });
+
+}
+function setActiveMenu(button){
+
+    [cashPage,reportPage,analyticsPage].forEach(btn=>{
+
+        btn.classList.remove("active");
+
+    });
+
+    button.classList.add("active");
 
 }
