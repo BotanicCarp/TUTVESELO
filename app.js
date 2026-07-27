@@ -28,6 +28,23 @@ const history = document.getElementById("history");
 
 const salesRef = collection(db, "sales");
 
+window.addSale = async function ({
+    service,
+    amount,
+    payment
+}) {
+
+    await addDoc(salesRef, {
+
+        service,
+        amount,
+        payment,
+        created: serverTimestamp()
+
+    });
+
+};
+
 // ==============================
 // Меню
 // ==============================
@@ -57,6 +74,9 @@ const reportHistory = document.getElementById("reportHistory");
 
 const analyticsPage = document.getElementById("analyticsPage");
 const analyticsScreen = document.getElementById("analyticsScreen");
+
+const rentalPage = document.getElementById("rentalPage");
+const rentalScreen = document.getElementById("rentalScreen");
 
 const salesCanvas = document.getElementById("salesChart");
 const serviceCanvas = document.getElementById("serviceChart");
@@ -403,12 +423,11 @@ cashPage.onclick = () => {
     cashScreen.style.display = "block";
     reportScreen.style.display = "none";
     analyticsScreen.style.display = "none";
+    rentalScreen.style.display = "none";
 
-    cashPage.classList.add("active");
-    reportPage.classList.remove("active");
-    analyticsPage.classList.remove("active");
+    setActiveMenu(cashPage);
 
-};;
+};
 
 reportPage.onclick = () => {
 
@@ -438,6 +457,16 @@ analyticsPage.onclick = () => {
     analyticsPage.classList.add("active");
 
     drawCharts();
+
+};
+rentalPage.onclick = () => {
+
+    cashScreen.style.display = "none";
+    reportScreen.style.display = "none";
+    analyticsScreen.style.display = "none";
+    rentalScreen.style.display = "block";
+
+    setActiveMenu(rentalPage);
 
 };
 
@@ -657,7 +686,7 @@ function drawCharts() {
 }
 function setActiveMenu(button){
 
-    [cashPage,reportPage,analyticsPage].forEach(btn=>{
+    [cashPage, reportPage, analyticsPage, rentalPage].forEach(btn => {
 
         btn.classList.remove("active");
 

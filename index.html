@@ -265,8 +265,111 @@
     </section>
 
 </div>
+<div id="rentalScreen" style="display:none;">
+
+    <section class="card">
+
+        <h2>🚗 Машины</h2>
+
+        <div class="rental-grid" id="carsGrid"></div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>🛴 Самокаты</h2>
+
+        <div class="rental-grid" id="scootersGrid"></div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>🚙 Детские машины</h2>
+
+        <div class="rental-grid" id="miniCarsGrid"></div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>🛵 Детские самокаты</h2>
+
+        <div class="rental-grid" id="miniScootersGrid"></div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>🎪 Батуты</h2>
+
+        <div class="rental-grid" id="trampolineGrid"></div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>🛟 Тюбинги</h2>
+
+        <div class="rental-grid" id="tubeGrid"></div>
+
+    </section>
+
+</div>
+<!-- Окно аренды -->
+<div id="rentalModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2 id="modalTitle">🚗 Аренда</h2>
+
+        <label>Имя клиента</label>
+        <input
+        type="text"
+        id="clientName"
+         placeholder="Имя (необязательно)">
+
+        <label>Время</label>
+
+        <select id="rentTime">
+
+            <option value="15">15 минут</option>
+            <option value="20">20 минут</option>
+            <option value="30">30 минут</option>
+            <option value="60">60 минут</option>
+
+        </select>
+
+        <label>Способ оплаты</label>
+
+        <select id="rentPayment">
+
+            <option>Kaspi</option>
+            <option>Наличные</option>
+
+        </select>
+
+        <label>Стоимость</label>
+
+        <div id="rentPrice" class="rent-price">
+          0 ₸
+        </div>
+
+        <div class="modal-buttons">
+
+            <button id="startRent">▶ Начать</button>
+
+            <button id="closeModal">✖ Закрыть</button>
+
+        </div>
+        <div id="rentStatus" class="rent-status"></div>
+
+    </div>
+
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module" src="app.js"></script>
+<script type="module" src="rental.js"></script>
 <nav class="bottom-nav">
 
     <button id="cashPage" class="nav-btn active">
@@ -276,6 +379,13 @@
         <span>Касса</span>
 
     </button>
+    <button id="rentalPage" class="nav-btn">
+
+    <span class="icon">🚗</span>
+
+    <span>Прокат</span>
+
+</button>
 
     <button id="reportPage" class="nav-btn">
 
@@ -292,6 +402,7 @@
         <span>Аналитика</span>
 
     </button>
+    
 
 </nav>
 </body>
