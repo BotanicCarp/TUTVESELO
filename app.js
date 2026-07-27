@@ -21,6 +21,9 @@ const kaspi = document.getElementById("kaspi");
 const cash = document.getElementById("cash");
 const cars = document.getElementById("cars");
 const tubes = document.getElementById("tubes");
+const carSalary = document.getElementById("carSalary");
+const tubeSalary = document.getElementById("tubeSalary");
+const totalSalary = document.getElementById("totalSalary");
 const history = document.getElementById("history");
 
 const salesRef = collection(db, "sales");
@@ -185,6 +188,15 @@ function render() {
     cash.textContent = cashSum + " ₸";
     cars.textContent = carsSum + " ₸";
     tubes.textContent = tubesSum + " ₸";
+    const carSalarySum = Math.round(carsSum * 0.20);
+    const tubeSalarySum = Math.round(tubesSum * 0.15);
+
+    const totalSalarySum = carSalarySum + tubeSalarySum;
+
+totalSalary.textContent = totalSalarySum + " ₸";
+
+    carSalary.textContent = carSalarySum + " ₸";
+    tubeSalary.textContent = tubeSalarySum + " ₸";
 
     history.innerHTML = "";
 
