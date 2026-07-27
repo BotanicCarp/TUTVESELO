@@ -45,6 +45,9 @@ const reportKaspi = document.getElementById("reportKaspi");
 const reportCash = document.getElementById("reportCash");
 const reportCars = document.getElementById("reportCars");
 const reportTubes = document.getElementById("reportTubes");
+const reportCarSalary = document.getElementById("reportCarSalary");
+const reportTubeSalary = document.getElementById("reportTubeSalary");
+const reportTotalSalary = document.getElementById("reportTotalSalary");
 
 const reportHistory = document.getElementById("reportHistory");
 
@@ -517,6 +520,13 @@ function loadReport(dateString){
     reportCash.textContent = cash + " ₸";
     reportCars.textContent = cars + " ₸";
     reportTubes.textContent = tubes + " ₸";
+    const carSalary = Math.round(cars * 0.20);
+    const tubeSalary = Math.round(tubes * 0.15);
+    const totalSalary = carSalary + tubeSalary;
+
+    reportCarSalary.textContent = carSalary + " ₸";
+    reportTubeSalary.textContent = tubeSalary + " ₸";
+    reportTotalSalary.textContent = totalSalary + " ₸";
 
 }
 function drawCharts() {
