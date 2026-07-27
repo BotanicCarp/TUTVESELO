@@ -26,7 +26,18 @@
     </div>
 
 </header>
+    <nav class="menu">
 
+    <button id="cashPage" class="menu-btn active">
+        🏠 Касса
+    </button>
+
+    <button id="reportPage" class="menu-btn">
+        📊 Отчёты
+    </button>
+
+    </nav>
+<div id="cashScreen">
     <!-- Машинки -->
     <section class="card">
 
@@ -147,6 +158,62 @@
     </button>
 
 </section>
+
+</div>
+<div id="reportScreen" style="display:none;">
+
+    <section class="card">
+
+        <h2>📊 Отчёты</h2>
+
+        <label>Выберите дату</label>
+
+        <input type="date" id="reportDate">
+
+    </section>
+
+    <section class="card">
+
+        <div class="stats">
+
+            <div>
+                <span>Общая сумма</span>
+                <strong id="reportTotal">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>Kaspi</span>
+                <strong id="reportKaspi">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>Наличные</span>
+                <strong id="reportCash">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>🚗 Машинки</span>
+                <strong id="reportCars">0 ₸</strong>
+            </div>
+
+            <div>
+                <span>🛷 Тюбинг</span>
+                <strong id="reportTubes">0 ₸</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Операции</h2>
+
+        <div id="reportHistory">
+            Нет операций
+        </div>
+
+    </section>
 
 </div>
 

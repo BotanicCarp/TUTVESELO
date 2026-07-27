@@ -25,6 +25,26 @@ const history = document.getElementById("history");
 
 const salesRef = collection(db, "sales");
 
+// ==============================
+// Меню
+// ==============================
+
+const cashPage = document.getElementById("cashPage");
+const reportPage = document.getElementById("reportPage");
+
+const cashScreen = document.getElementById("cashScreen");
+const reportScreen = document.getElementById("reportScreen");
+
+const reportDate = document.getElementById("reportDate");
+
+const reportTotal = document.getElementById("reportTotal");
+const reportKaspi = document.getElementById("reportKaspi");
+const reportCash = document.getElementById("reportCash");
+const reportCars = document.getElementById("reportCars");
+const reportTubes = document.getElementById("reportTubes");
+
+const reportHistory = document.getElementById("reportHistory");
+
 let sales = [];
 
 // ==============================
@@ -342,3 +362,119 @@ setInterval(() => {
     render();
 
 }, 60000);
+
+// ==============================
+// Переключение страниц
+// ==============================
+
+cashPage.onclick = () => {
+
+    cashScreen.style.display = "block";
+    reportScreen.style.display = "none";
+
+    cashPage.classList.add("active");
+    reportPage.classList.remove("active");
+
+};
+
+reportPage.onclick = () => {
+
+    cashScreen.style.display = "none";
+    reportScreen.style.display = "block";
+
+    reportPage.classList.add("active");
+    cashPage.classList.remove("active");
+
+    const today = new Date();
+    reportDate.value = today.toISOString().split("T")[0];
+
+    loadReport(reportDate.value);
+
+};
+
+reportDate.onchange = () => {
+
+    loadReport(reportDate.value);
+
+};
+function loadReport(dateString){
+
+    let total = 0;
+    let kaspi = 0;
+    let cash = 0;
+    let cars = 0;
+    let tubes = 0;
+
+    reportHistory.innerHTML = "";
+
+    const selected = new Date(dateString);
+    selected.setHours(0,0,0,0);
+
+    const next = new Date(selected);
+    next.setDate(selected.getDate()+1);
+
+    const daySales = sales.filter(item=>{
+
+        if(!item.created?.toDate) return false;
+
+        const d = item.created.toDate();
+
+        return d>=selected && d<next;
+
+    });
+
+    if(daySales.length===0){
+
+        reportHistory.innerHTML="Нет операций";
+
+    }
+
+    daySales.forEach(item=>{
+
+        total += item.amount;
+
+        if(item.payment==="Kaspi"){
+            kaspi += item.amount;
+        }else{
+            cash += item.amount;
+        }
+
+        if(item.service==="Машинки"){
+            cars += item.amount;
+        }
+
+        if(item.service==="Тюбинг"){
+            tubes += item.amount;
+        }
+
+        const d=item.created.toDate();
+
+        reportHistory.innerHTML += `
+            <div class="history-item">
+
+                <div class="history-top">
+
+                    <strong>${item.service}</strong>
+
+                    <strong>${item.amount} ₸</strong>
+
+                </div>
+
+                <div>${item.payment}</div>
+
+                <div>
+                    🕒 ${d.toLocaleTimeString("ru-RU")}
+                </div>
+
+            </div>
+        `;
+
+    });
+
+    reportTotal.textContent = total + " ₸";
+    reportKaspi.textContent = kaspi + " ₸";
+    reportCash.textContent = cash + " ₸";
+    reportCars.textContent = cars + " ₸";
+    reportTubes.textContent = tubes + " ₸";
+
+}
