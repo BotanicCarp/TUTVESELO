@@ -45,6 +45,21 @@ const reportTubes = document.getElementById("reportTubes");
 
 const reportHistory = document.getElementById("reportHistory");
 
+// =======================
+// Аналитика
+// =======================
+
+const analyticsPage = document.getElementById("analyticsPage");
+const analyticsScreen = document.getElementById("analyticsScreen");
+
+const salesCanvas = document.getElementById("salesChart");
+const serviceCanvas = document.getElementById("serviceChart");
+const paymentCanvas = document.getElementById("paymentChart");
+
+let salesChart;
+let serviceChart;
+let paymentChart;
+
 let sales = [];
 
 // ==============================
@@ -113,6 +128,7 @@ onSnapshot(q, snapshot => {
     });
 
     render();
+    drawCharts();
 
 });
 
@@ -391,6 +407,19 @@ reportPage.onclick = () => {
     loadReport(reportDate.value);
 
 };
+analyticsPage.onclick = () => {
+
+    cashScreen.style.display = "none";
+    reportScreen.style.display = "none";
+    analyticsScreen.style.display = "block";
+
+    cashPage.classList.remove("active");
+    reportPage.classList.remove("active");
+    analyticsPage.classList.add("active");
+
+    drawCharts();
+
+};
 
 reportDate.onchange = () => {
 
@@ -476,5 +505,126 @@ function loadReport(dateString){
     reportCash.textContent = cash + " ₸";
     reportCars.textContent = cars + " ₸";
     reportTubes.textContent = tubes + " ₸";
+
+}
+function drawCharts() {
+
+    const days = {};
+
+    sales.forEach(item => {
+
+        if (!item.created?.toDate) return;
+
+        const d = item.created.toDate();
+
+        const day = d.toLocaleDateString("ru-RU");
+
+        if (!days[day]) {
+
+            days[day] = {
+                total: 0,
+                cars: 0,
+                tubes: 0,
+                kaspi: 0,
+                cash: 0
+            };
+
+        }
+
+        days[day].total += item.amount;
+
+        if (item.service === "Машинки")
+            days[day].cars += item.amount;
+
+        if (item.service === "Тюбинг")
+            days[day].tubes += item.amount;
+
+        if (item.payment === "Kaspi")
+            days[day].kaspi += item.amount;
+        else
+            days[day].cash += item.amount;
+
+    });
+
+    const labels = Object.keys(days);
+
+    const totals = labels.map(d => days[d].total);
+
+    const cars = labels.map(d => days[d].cars);
+
+    const tubes = labels.map(d => days[d].tubes);
+
+    const kaspi = labels.reduce((s,d)=>s+days[d].kaspi,0);
+
+    const cash = labels.reduce((s,d)=>s+days[d].cash,0);
+
+
+    if (salesChart) salesChart.destroy();
+    if (serviceChart) serviceChart.destroy();
+    if (paymentChart) paymentChart.destroy();
+
+
+    salesChart = new Chart(salesCanvas, {
+
+        type: "bar",
+
+        data: {
+
+            labels,
+
+            datasets: [{
+                label: "Выручка",
+                data: totals
+            }]
+
+        }
+
+    });
+
+
+    serviceChart = new Chart(serviceCanvas, {
+
+        type: "bar",
+
+        data: {
+
+            labels,
+
+            datasets: [
+
+                {
+                    label: "🚗 Машинки",
+                    data: cars
+                },
+
+                {
+                    label: "🛷 Тюбинг",
+                    data: tubes
+                }
+
+            ]
+
+        }
+
+    });
+
+
+    paymentChart = new Chart(paymentCanvas, {
+
+        type: "pie",
+
+        data: {
+
+            labels: ["Kaspi", "Наличные"],
+
+            datasets: [{
+
+                data: [kaspi, cash]
+
+            }]
+
+        }
+
+    });
 
 }
