@@ -10,6 +10,53 @@ import {
     serverTimestamp
 } from "./firebase.js";
 
+import {
+    getToken,
+    onMessage
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-messaging.js";
+
+import { messaging } from "./firebase.js";
+async function initNotifications() {
+
+    if (!("serviceWorker" in navigator)) return;
+
+    try {
+
+        await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+
+        const permission = await Notification.requestPermission();
+
+        if (permission === "granted") {
+
+            const token = await getToken(messaging, {
+                vapidKey: "BJf5RHlotQmI5L2bqsPLSZ7ey-6MrPniSCUezp9qAmAPHcZogVjfJ49qn-k0jwVgxlgfcSjGqCoSpln3mE9HGy0"
+            });
+
+            console.log("FCM Token:", token);
+
+        }
+
+    } catch (e) {
+
+        console.error("FCM Error:", e);
+
+    }
+
+}
+
+initNotifications();
+onMessage(messaging, (payload) => {
+
+    console.log(payload);
+
+    new Notification(
+        payload.notification.title,
+        {
+            body: payload.notification.body
+        }
+    );
+
+});
 let payment = "Kaspi";
 
 const kaspiBtn = document.getElementById("kaspiBtn");

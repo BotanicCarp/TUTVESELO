@@ -11,7 +11,11 @@ import {
     orderBy,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
+import {
+    getMessaging,
+    getToken,
+    onMessage
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging.js";
 const firebaseConfig = {
     apiKey: "AIzaSyCpKl4I1rEvICuzYu4z0PWhAaGWbp6pdk0",
     authDomain: "kassa-prokat.firebaseapp.com",
@@ -22,6 +26,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+export const messaging = getMessaging(app);
 
 export const db = getFirestore(app);
 
