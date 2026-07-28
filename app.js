@@ -434,10 +434,9 @@ reportPage.onclick = () => {
     cashScreen.style.display = "none";
     reportScreen.style.display = "block";
     analyticsScreen.style.display = "none";
+    rentalScreen.style.display = "none";
 
-    reportPage.classList.add("active");
-    cashPage.classList.remove("active");
-    analyticsPage.classList.remove("active");
+    setActiveMenu(reportPage);
 
     const today = new Date();
     reportDate.value = today.toISOString().split("T")[0];
@@ -451,10 +450,9 @@ analyticsPage.onclick = () => {
     cashScreen.style.display = "none";
     reportScreen.style.display = "none";
     analyticsScreen.style.display = "block";
+    rentalScreen.style.display = "none";
 
-    cashPage.classList.remove("active");
-    reportPage.classList.remove("active");
-    analyticsPage.classList.add("active");
+    setActiveMenu(analyticsPage);
 
     drawCharts();
 
