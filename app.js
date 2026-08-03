@@ -129,6 +129,17 @@ const salesCanvas = document.getElementById("salesChart");
 const serviceCanvas = document.getElementById("serviceChart");
 const paymentCanvas = document.getElementById("paymentChart");
 
+const analyticsDate = document.getElementById("analyticsDate");
+
+analyticsDate.value =
+    new Date().toISOString().split("T")[0];
+
+analyticsDate.onchange = () => {
+
+    drawCharts();
+
+};
+
 let salesChart;
 let serviceChart;
 let paymentChart;
@@ -610,117 +621,101 @@ function loadReport(dateString){
 }
 function drawCharts() {
 
-    const days = {};
+    const selected = new Date(analyticsDate.value);
+    selected.setHours(0,0,0,0);
+
+    const next = new Date(selected);
+    next.setDate(selected.getDate()+1);
+
+    let total = 0;
+    let cars = 0;
+    let tubes = 0;
+    let kaspi = 0;
+    let cash = 0;
+
+    const hours = new Array(24).fill(0);
 
     sales.forEach(item => {
 
-        if (!item.created?.toDate) return;
+        if(!item.created?.toDate) return;
 
         const d = item.created.toDate();
 
-        const day = d.toLocaleDateString("ru-RU");
+        if(d < selected || d >= next) return;
 
-        if (!days[day]) {
+        total += item.amount;
 
-            days[day] = {
-                total: 0,
-                cars: 0,
-                tubes: 0,
-                kaspi: 0,
-                cash: 0
-            };
-
-        }
-
-        days[day].total += item.amount;
-
-        if (item.service === "Машинки")
-            days[day].cars += item.amount;
-
-        if (item.service === "Тюбинг")
-            days[day].tubes += item.amount;
-
-        if (item.payment === "Kaspi")
-            days[day].kaspi += item.amount;
+        if(item.service==="Тюбинг")
+            tubes += item.amount;
         else
-            days[day].cash += item.amount;
+            cars += item.amount;
+
+        if(item.payment==="Kaspi")
+            kaspi += item.amount;
+        else
+            cash += item.amount;
+
+        hours[d.getHours()] += item.amount;
 
     });
 
-    const labels = Object.keys(days);
+    if(salesChart) salesChart.destroy();
+    if(serviceChart) serviceChart.destroy();
+    if(paymentChart) paymentChart.destroy();
 
-    const totals = labels.map(d => days[d].total);
+    salesChart = new Chart(salesCanvas,{
 
-    const cars = labels.map(d => days[d].cars);
+        type:"bar",
 
-    const tubes = labels.map(d => days[d].tubes);
+        data:{
 
-    const kaspi = labels.reduce((s,d)=>s+days[d].kaspi,0);
+            labels:[
+                "0","1","2","3","4","5","6","7",
+                "8","9","10","11","12","13","14","15",
+                "16","17","18","19","20","21","22","23"
+            ],
 
-    const cash = labels.reduce((s,d)=>s+days[d].cash,0);
+            datasets:[{
 
+                label:"Выручка",
 
-    if (salesChart) salesChart.destroy();
-    if (serviceChart) serviceChart.destroy();
-    if (paymentChart) paymentChart.destroy();
+                data:hours
 
-
-    salesChart = new Chart(salesCanvas, {
-
-        type: "bar",
-
-        data: {
-
-            labels,
-
-            datasets: [{
-                label: "Выручка",
-                data: totals
             }]
 
         }
 
     });
 
+    serviceChart = new Chart(serviceCanvas,{
 
-    serviceChart = new Chart(serviceCanvas, {
+        type:"pie",
 
-        type: "bar",
+        data:{
 
-        data: {
+            labels:["Машинки","Тюбинг"],
 
-            labels,
+            datasets:[{
 
-            datasets: [
+                data:[cars,tubes]
 
-                {
-                    label: "🚗 Машинки",
-                    data: cars
-                },
-
-                {
-                    label: "🛷 Тюбинг",
-                    data: tubes
-                }
-
-            ]
+            }]
 
         }
 
     });
 
+    paymentChart = new Chart(paymentCanvas,{
 
-    paymentChart = new Chart(paymentCanvas, {
+        type:"pie",
 
-        type: "pie",
+        data:{
 
-        data: {
+            labels:["Kaspi","Наличные"],
 
-            labels: ["Kaspi", "Наличные"],
+            datasets:[{
 
-            datasets: [{
-
-                data: [kaspi, cash]
+                data:[kaspi,cash]
 
             }]
 

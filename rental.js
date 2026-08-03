@@ -16,22 +16,13 @@ const rentalConfig = {
         times: [30,60],
         price: 1000,
         items: [
-            "Самокат 1",
-            "Самокат 2",
-            "Самокат 3",
-            "Самокат 4",
-            "Самокат 5",
-            "Самокат 6",
-            "Самокат 7",
-            "Самокат 8",
-            "Самокат 9",
-            "Самокат 10",
+            "Самокат ",
         ]
     },
 
     miniCars: {
         times: [30,60],
-        price: 500,
+        price: 2000,
         items: [
             "Мини машина 1",
             "Мини машина 2",
@@ -43,8 +34,7 @@ const rentalConfig = {
         times: [30,60],
         price: 500,
         items: [
-            "Мини самокат 1",
-            "Мини самокат 2"
+            "Мини самокат ",
         ]
     },
 
@@ -61,22 +51,7 @@ trampolines: {
         times: [60],
         price: 1000,
         items: [
-            "Тюбинг 1",
-            "Тюбинг 2",
-            "Тюбинг 3",
-            "Тюбинг 4",
-            "Тюбинг 5",
-            "Тюбинг 6",
-            "Тюбинг 7",
-            "Тюбинг 8",
-            "Тюбинг 9",
-            "Тюбинг 10",
-            "Тюбинг 11",
-            "Тюбинг 12",
-            "Тюбинг 13",
-            "Тюбинг 14",
-            "Тюбинг 15",
-            "Тюбинг 16",
+            "Тюбинг ",
         ]
     }
 
@@ -172,9 +147,16 @@ function drawGrid(id, list, icon, type){
 
 card.onclick = () => {
 
-    if (type !== "trampolines" && activeRentals[name]) {
-        return;
-    }
+    const multiTypes = [
+    "trampolines",
+    "scooters",
+    "miniScooters",
+    "tubes"
+];
+
+if (!multiTypes.includes(type) && activeRentals[name]) {
+    return;
+}
 
     openRental(name, type);
 
@@ -294,18 +276,20 @@ function refreshTrampoline(name){
 
     status.innerHTML = html;
 
-    status.querySelectorAll(".finishClient").forEach(btn=>{
+status.querySelectorAll(".finishClient").forEach(btn => {
 
-        btn.onclick = ()=>{
+    btn.addEventListener("click", (e) => {
 
-            finishTrampoline(
-                btn.dataset.name,
-                Number(btn.dataset.index)
-            );
+        e.stopPropagation();
 
-        };
+        finishMultiRental(
+            btn.dataset.name,
+            Number(btn.dataset.index)
+        );
 
     });
+
+});
 
 }
 
@@ -363,7 +347,12 @@ document.getElementById("startRent").onclick = async () => {
 
 });
 
-if (currentRental.type === "trampolines") {
+if (
+    currentRental.type === "trampolines" ||
+    currentRental.type === "scooters" ||
+    currentRental.type === "miniScooters" ||
+    currentRental.type === "tubes"
+) {
 
     if (!activeRentals[currentRental.name]) {
         activeRentals[currentRental.name] = [];
@@ -401,7 +390,7 @@ setInterval(() => {
 
         if(Array.isArray(rental)){
 
-            refreshTrampoline(name);
+            refreshMultiRental();
 
         }else{
 
@@ -439,7 +428,7 @@ function finishRental(name){
     });
 
 }
-function finishTrampoline(name,index){
+function finishMultiRental(name,index){
 
     activeRentals[name].splice(index,1);
 
