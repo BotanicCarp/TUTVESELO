@@ -58,6 +58,7 @@ trampolines: {
 };
 let currentRental = null;
 const activeRentals = {};
+let isStartingRent = false;
 const cash = {
     cars: 0,
     tubes: 0
@@ -195,8 +196,10 @@ function refreshCard(rental){
 
         }else{
 
-            const min = Math.floor(Math.abs(diff)/60000);
-            const sec = Math.floor((Math.abs(diff)%60000)/1000);
+        const totalSeconds = Math.abs(Math.floor(diff / 1000));
+
+        const min = Math.floor(totalSeconds / 60);
+        const sec = totalSeconds % 60;
 
             status.className = "status-over";
 
@@ -247,8 +250,10 @@ function refreshTrampoline(name){
 
         const diff = client.endTime - Date.now();
 
-        const min = Math.floor(Math.abs(diff)/60000);
-        const sec = Math.floor((Math.abs(diff)%60000)/1000);
+        const totalSeconds = Math.abs(Math.floor(diff / 1000));
+
+        const min = Math.floor(totalSeconds / 60);
+        const sec = totalSeconds % 60;
 
         html += `
             <div style="margin-bottom:8px">
@@ -311,7 +316,18 @@ document.getElementById("closeModal").onclick = () => {
 };
 document.getElementById("startRent").onclick = async () => {
 
-    if (!currentRental) return;
+    if (isStartingRent) return;
+
+    isStartingRent = true;
+
+    const btn = document.getElementById("startRent");
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Создание...";
+
+    try {
+
+        if (!currentRental) return;
 
     const client = document.getElementById("clientName").value.trim();
 
@@ -381,18 +397,34 @@ document.getElementById("rentStatus").innerHTML =
 document.getElementById("rentalModal").style.display = "none";
 
 console.log(currentRental);
+
+    } catch (e) {
+
+        console.error(e);
+        alert("Ошибка сохранения аренды");
+
+    } finally {
+
+        btn.disabled = false;
+        btn.textContent = "▶ Начать";
+        isStartingRent = false;
+
+    }
+
 };
+
+
 
 
 setInterval(() => {
 
-    Object.entries(activeRentals).forEach(([name,rental])=>{
+    Object.entries(activeRentals).forEach(([name, rental]) => {
 
-        if(Array.isArray(rental)){
+        if (Array.isArray(rental)) {
 
-            refreshMultiRental();
+            refreshTrampoline(name);
 
-        }else{
+        } else {
 
             refreshCard(rental);
 
@@ -400,7 +432,7 @@ setInterval(() => {
 
     });
 
-},1000);
+}, 1000);
 function finishRental(name){
 
     delete activeRentals[name];
