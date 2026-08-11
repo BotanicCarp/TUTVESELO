@@ -231,7 +231,7 @@ function refreshCard(rental){
     });
 
 }
-function refreshTrampoline(name){
+function refreshMultiRental(name){
 
     const card = [...document.querySelectorAll(".rental-item")]
         .find(c => c.dataset.name === name);
@@ -378,7 +378,7 @@ if (
         ...currentRental
     });
 
-    refreshTrampoline(currentRental.name);
+    refreshMultiRental(currentRental.name);
 
 } else {
 
@@ -420,11 +420,11 @@ setInterval(() => {
 
     Object.entries(activeRentals).forEach(([name, rental]) => {
 
-        if (Array.isArray(rental)) {
+if (Array.isArray(rental)) {
 
-            refreshTrampoline(name);
+    refreshMultiRental(name);
 
-        } else {
+} else {
 
             refreshCard(rental);
 
@@ -460,20 +460,20 @@ function finishRental(name){
     });
 
 }
-function finishMultiRental(name,index){
+function finishMultiRental(name, index){
 
-    activeRentals[name].splice(index,1);
+    if (!Array.isArray(activeRentals[name])) return;
 
-    if(activeRentals[name].length===0){
+    activeRentals[name].splice(index, 1);
+
+    if (activeRentals[name].length === 0) {
 
         delete activeRentals[name];
 
         finishRental(name);
 
         return;
-
     }
 
-    refreshTrampoline(name);
-
+    refreshMultiRental(name);
 }
