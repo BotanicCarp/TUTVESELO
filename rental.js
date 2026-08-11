@@ -523,47 +523,117 @@ if (Array.isArray(rental)) {
     });
 
 }, 1000);
-function finishRental(name){
+async function finishRental(name){
 
-    delete activeRentals[name];
+    try {
 
-    document.querySelectorAll(".rental-item").forEach(card=>{
+        const rental = activeRentals[name];
 
-        if(card.dataset.name !== name) return;
+        if (!rental) return;
 
-        card.querySelector("div").className = "status-free";
-        card.querySelector("div").innerHTML = "🟢 Свободно";
+        // Если это обычный аттракцион
+        if (!Array.isArray(rental) && rental.id) {
 
-        card.onclick = () => {
+            await deleteDoc(
+                doc(db, "rentals", rental.id)
+            );
 
-    if(card.dataset.type !== "trampolines" &&
-       activeRentals[card.dataset.name]){
-
-        return;
-
-    }
-
-    openRental(card.dataset.name, card.dataset.type);
-
-};
-
-    });
-
-}
-function finishMultiRental(name, index){
-
-    if (!Array.isArray(activeRentals[name])) return;
-
-    activeRentals[name].splice(index, 1);
-
-    if (activeRentals[name].length === 0) {
+        }
 
         delete activeRentals[name];
 
-        finishRental(name);
+        document.querySelectorAll(".rental-item").forEach(card => {
 
-        return;
+            if (card.dataset.name !== name) return;
+
+            card.querySelector("div").className = "status-free";
+
+            card.querySelector("div").innerHTML =
+                "🟢 Свободно";
+
+            card.onclick = () => {
+
+                const multiTypes = [
+                    "trampolines",
+                    "scooters",
+                    "miniScooters",
+                    "tubes"
+                ];
+
+                if (
+                    !multiTypes.includes(card.dataset.type) &&
+                    activeRentals[card.dataset.name]
+                ) {
+                    return;
+                }
+
+                openRental(
+                    card.dataset.name,
+                    card.dataset.type
+                );
+
+            };
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Ошибка удаления аренды:",
+            error
+        );
+
+        alert(
+            "Не удалось завершить аренду. Проверьте интернет."
+        );
+
     }
 
-    refreshMultiRental(name);
+}
+async function finishMultiRental(name, index){
+
+    try {
+
+        if (!Array.isArray(activeRentals[name])) return;
+
+        const rental = activeRentals[name][index];
+
+        if (!rental) return;
+
+        // Сначала удаляем конкретную аренду из Firebase
+        if (rental.id) {
+
+            await deleteDoc(
+                doc(db, "rentals", rental.id)
+            );
+
+        }
+
+        // Затем удаляем её локально
+        activeRentals[name].splice(index, 1);
+
+        if (activeRentals[name].length === 0) {
+
+            delete activeRentals[name];
+
+            finishRental(name);
+
+            return;
+        }
+
+        refreshMultiRental(name);
+
+    } catch (error) {
+
+        console.error(
+            "Ошибка завершения аренды:",
+            error
+        );
+
+        alert(
+            "Не удалось завершить аренду. Проверьте интернет."
+        );
+
+    }
+
 }
