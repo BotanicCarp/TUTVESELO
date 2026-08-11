@@ -1,3 +1,13 @@
+import {
+    db,
+    collection,
+    addDoc,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    serverTimestamp
+} from "./firebase.js";
+
 const rentalConfig = {
 
     cars: {
@@ -57,8 +67,12 @@ trampolines: {
 
 };
 let currentRental = null;
+
 const activeRentals = {};
+
 let isStartingRent = false;
+
+const rentalsRef = collection(db, "rentals");
 const cash = {
     cars: 0,
     tubes: 0
@@ -342,16 +356,40 @@ document.getElementById("startRent").onclick = async () => {
             .replace(/[^\d]/g, "")
     );
 
-    const endTime = Date.now() + minutes * 60000;
+const startTime = Date.now();
+const endTime = startTime + minutes * 60000;
 
-    currentRental.client = client;
-    currentRental.minutes = minutes;
-    currentRental.payment = payment;
-    currentRental.price = price;
-    currentRental.endTime = endTime;
+currentRental.client = client;
+currentRental.minutes = minutes;
+currentRental.payment = payment;
+currentRental.price = price;
+currentRental.startTime = startTime;
+currentRental.endTime = endTime;
 
-    await window.addSale({
+const rentalData = {
+    name: currentRental.name,
+    type: currentRental.type,
+    client: currentRental.client,
+    minutes: currentRental.minutes,
+    payment: currentRental.payment,
+    price: currentRental.price,
 
+    startTime: currentRental.startTime,
+    endTime: currentRental.endTime,
+
+    status: "active",
+
+    createdAt: serverTimestamp()
+};
+
+const rentalDoc = await addDoc(
+    rentalsRef,
+    rentalData
+);
+
+currentRental.id = rentalDoc.id;
+
+await window.addSale({
     service:
         currentRental.type === "tubes"
             ? "Тюбинг"
@@ -360,7 +398,6 @@ document.getElementById("startRent").onclick = async () => {
     amount: price,
 
     payment: payment
-
 });
 
 if (

@@ -735,3 +735,19 @@ function setActiveMenu(button){
     button.classList.add("active");
 
 }
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+            .register("./sw.js")
+            .then(() => {
+
+                console.log("PWA готово");
+
+            })
+            .catch(console.error);
+
+    });
+
+}
