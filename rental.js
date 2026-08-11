@@ -73,6 +73,59 @@ const activeRentals = {};
 let isStartingRent = false;
 
 const rentalsRef = collection(db, "rentals");
+onSnapshot(rentalsRef, (snapshot) => {
+
+    // Очищаем локальные активные аренды
+    Object.keys(activeRentals).forEach(key => {
+        delete activeRentals[key];
+    });
+
+    snapshot.forEach((docSnap) => {
+
+        const rental = {
+            id: docSnap.id,
+            ...docSnap.data()
+        };
+
+        // Берём только активные аренды
+        if (rental.status !== "active") return;
+
+        // Для тюбингов, батутов и других многократных аренд
+        const multiTypes = [
+            "trampolines",
+            "scooters",
+            "miniScooters",
+            "tubes"
+        ];
+
+        if (multiTypes.includes(rental.type)) {
+
+            if (!activeRentals[rental.name]) {
+                activeRentals[rental.name] = [];
+            }
+
+            activeRentals[rental.name].push(rental);
+
+        } else {
+
+            activeRentals[rental.name] = rental;
+
+        }
+
+    });
+
+    // Обновляем карточки
+    Object.entries(activeRentals).forEach(([name, rental]) => {
+
+        if (Array.isArray(rental)) {
+            refreshMultiRental(name);
+        } else {
+            refreshCard(rental);
+        }
+
+    });
+
+});
 const cash = {
     cars: 0,
     tubes: 0
