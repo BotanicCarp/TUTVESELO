@@ -1,4 +1,10 @@
 import {
+    messaging
+} from "./firebase.js";
+
+
+
+import {
     db,
     collection,
     addDoc,
@@ -13,12 +19,14 @@ import {
 import {
     getToken,
     onMessage
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-messaging.js";
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging.js";
 
-import { messaging } from "./firebase.js";
 async function initNotifications() {
 
-    if (!("serviceWorker" in navigator)) return;
+    if (!("serviceWorker" in navigator)) {
+        console.log("Service Worker не поддерживается");
+        return;
+    }
 
     try {
 
@@ -26,22 +34,22 @@ async function initNotifications() {
 
         const permission = await Notification.requestPermission();
 
-        if (permission === "granted") {
-
-            const token = await getToken(messaging, {
-                vapidKey: "BJf5RHlotQmI5L2bqsPLSZ7ey-6MrPniSCUezp9qAmAPHcZogVjfJ49qn-k0jwVgxlgfcSjGqCoSpln3mE9HGy0"
-            });
-
-            console.log("FCM Token:", token);
-
+        if (permission !== "granted") {
+            console.log("Уведомления запрещены");
+            return;
         }
 
-    } catch (e) {
+        const token = await getToken(messaging, {
+            vapidKey: "BJf5RHlotQmI5L2bqsPLSZ7ey-6MrPniSCUezp9qAmAPHcZogVjfJ49qn-k0jwVgxlgfcSjGqCoSpln3mE9HGy0"
+        });
 
-        console.error("FCM Error:", e);
+        console.log("FCM Token:", token);
+
+    } catch (error) {
+
+        console.error("FCM Error:", error);
 
     }
-
 }
 
 initNotifications();
