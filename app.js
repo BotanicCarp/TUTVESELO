@@ -13,6 +13,7 @@ import {
     onSnapshot,
     query,
     orderBy,
+    setDoc,
     serverTimestamp
 } from "./firebase.js";
 
@@ -49,6 +50,13 @@ if (!token) {
 }
 
 console.log("FCM Token:", token);
+await setDoc(doc(db, "fcmTokens", token), {
+    token: token,
+    updatedAt: serverTimestamp(),
+    userAgent: navigator.userAgent
+});
+
+console.log("FCM Token сохранён в Firestore");
 
 // Сохраняем устройство в Firestore
 const tokenRef = doc(db, "fcmTokens", token);
