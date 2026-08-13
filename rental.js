@@ -79,6 +79,16 @@ onSnapshot(rentalsRef, (snapshot) => {
     Object.keys(activeRentals).forEach(key => {
         delete activeRentals[key];
     });
+    document.querySelectorAll(".rental-item").forEach(card => {
+
+    const status = card.querySelector("div");
+
+    if (!status) return;
+
+    status.className = "status-free";
+    status.innerHTML = "🟢 Свободно";
+
+});
 
     snapshot.forEach((docSnap) => {
 
@@ -453,33 +463,6 @@ await window.addSale({
     payment: payment
 });
 
-if (
-    currentRental.type === "trampolines" ||
-    currentRental.type === "scooters" ||
-    currentRental.type === "miniScooters" ||
-    currentRental.type === "tubes"
-) {
-
-    if (!activeRentals[currentRental.name]) {
-        activeRentals[currentRental.name] = [];
-    }
-
-    activeRentals[currentRental.name].push({
-        ...currentRental
-    });
-
-    refreshMultiRental(currentRental.name);
-
-} else {
-
-    activeRentals[currentRental.name] = {
-        ...currentRental
-    };
-
-    refreshCard(activeRentals[currentRental.name]);
-
-}
-
 
 document.getElementById("rentStatus").innerHTML =
     "🟡 Аренда запущена";
@@ -590,38 +573,35 @@ async function finishRental(name){
     }
 
 }
-async function finishMultiRental(name, index){
+async function finishMultiRental(name, index) {
 
     try {
 
-        if (!Array.isArray(activeRentals[name])) return;
+        const rentals = activeRentals[name];
 
-        const rental = activeRentals[name][index];
-
-        if (!rental) return;
-
-        // Сначала удаляем конкретную аренду из Firebase
-        if (rental.id) {
-
-            await deleteDoc(
-                doc(db, "rentals", rental.id)
-            );
-
-        }
-
-        // Затем удаляем её локально
-        activeRentals[name].splice(index, 1);
-
-        if (activeRentals[name].length === 0) {
-
-            delete activeRentals[name];
-
-            finishRental(name);
-
+        if (!Array.isArray(rentals)) {
             return;
         }
 
-        refreshMultiRental(name);
+        const rental = rentals[index];
+
+        if (!rental) {
+            return;
+        }
+
+        // Запоминаем ID ДО удаления из Firebase
+        const rentalId = rental.id;
+
+        if (!rentalId) {
+            console.error("У аренды отсутствует ID Firebase");
+            return;
+        }
+
+        // Удаляем только из Firebase.
+        // onSnapshot() сам обновит интерфейс.
+        await deleteDoc(
+            doc(db, "rentals", rentalId)
+        );
 
     } catch (error) {
 

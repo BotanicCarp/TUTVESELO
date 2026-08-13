@@ -83,20 +83,38 @@ const history = document.getElementById("history");
 
 const salesRef = collection(db, "sales");
 
+let saleInProgress = false;
+
 window.addSale = async function ({
     service,
     amount,
     payment
 }) {
 
-    await addDoc(salesRef, {
+    if (saleInProgress) {
+        console.warn("Продажа уже создаётся");
+        return;
+    }
 
-        service,
-        amount,
-        payment,
-        created: serverTimestamp()
+    saleInProgress = true;
 
-    });
+    try {
+
+        await addDoc(salesRef, {
+
+            service,
+            amount,
+            payment,
+
+            created: serverTimestamp()
+
+        });
+
+    } finally {
+
+        saleInProgress = false;
+
+    }
 
 };
 
@@ -184,14 +202,35 @@ document.querySelectorAll(".price").forEach(button => {
 
     button.addEventListener("click", async () => {
 
-        await addDoc(salesRef, {
+        // Защита от двойного нажатия
+        if (button.disabled) return;
 
-            service: button.dataset.service,
-            amount: Number(button.dataset.price),
-            payment: payment,
-            created: serverTimestamp()
+        button.disabled = true;
 
-        });
+        const oldText = button.textContent;
+
+        button.textContent = "⏳";
+
+        try {
+
+            await window.addSale({
+                service: button.dataset.service,
+                amount: Number(button.dataset.price),
+                payment: payment
+            });
+
+        } catch (error) {
+
+            console.error("Ошибка продажи:", error);
+
+            alert("Не удалось пробить операцию");
+
+        } finally {
+
+            button.disabled = false;
+            button.textContent = oldText;
+
+        }
 
     });
 
