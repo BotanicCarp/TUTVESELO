@@ -39,10 +39,27 @@ async function initNotifications() {
             return;
         }
 
-        const token = await getToken(messaging, {
-            vapidKey: "BJf5RHlotQmI5L2bqsPLSZ7ey-6MrPniSCUezp9qAmAPHcZogVjfJ49qn-k0jwVgxlgfcSjGqCoSpln3mE9HGy0"
-        });
+const token = await getToken(messaging, {
+    vapidKey: "BJf5RHlotQmI5L2bqsPLSZ7ey-6MrPniSCUezp9qAmAPHcZogVjfJ49qn-k0jwVgxlgfcSjGqCoSpln3mE9HGy0"
+});
 
+if (!token) {
+    console.log("FCM Token не получен");
+    return;
+}
+
+console.log("FCM Token:", token);
+
+// Сохраняем устройство в Firestore
+const tokenRef = doc(db, "fcmTokens", token);
+
+await setDoc(tokenRef, {
+    token: token,
+    updatedAt: serverTimestamp(),
+    userAgent: navigator.userAgent
+});
+
+console.log("FCM Token сохранён в Firestore");
         console.log("FCM Token:", token);
 
     } catch (error) {
