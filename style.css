@@ -712,44 +712,174 @@ body{
     color:#4CAF50;
 }
 
-/* ===============================
-   КОЛИЧЕСТВО БАТУТОВ И ТЮБИНГОВ
-==================================*/
+/* =========================================================
+   МОБИЛЬНЫЙ ДИЗАЙН ЭКРАНА «ПРОКАТ»
+   2 колонки, компактные карточки
+========================================================= */
 
-.quantity-block{
-    margin-top:15px;
+@media (max-width: 768px){
+
+    .container{
+        width:100%;
+        margin:0 auto;
+        padding:12px 10px 100px;
+    }
+
+    /* Компактная шапка */
+    .header{
+        border-radius:22px;
+        padding:18px 14px 16px;
+        margin-bottom:18px;
+    }
+
+    .logo{
+        width:82px;
+        height:82px;
+        margin-bottom:8px;
+    }
+
+    .header h1{
+        font-size:25px;
+        line-height:1.1;
+    }
+
+    .header p{
+        font-size:14px;
+        margin-top:5px;
+    }
+
+    .status{
+        font-size:13px;
+        margin-top:7px;
+    }
+
+    .header-datetime{
+        margin:9px auto 0;
+        padding:6px 14px;
+        border-radius:12px;
+    }
+
+    .header-datetime div{
+        font-size:12px;
+    }
+
+    .header-datetime strong{
+        font-size:19px;
+    }
+
+    /* Категории проката */
+    #rentalScreen{
+        display:grid;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:12px;
+        align-items:stretch;
+    }
+
+    #rentalScreen .card{
+        margin:0;
+        padding:14px 10px 12px;
+        min-height:132px;
+        border-radius:20px;
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+        box-shadow:0 6px 16px rgba(0,0,0,.08);
+        transition:transform .15s ease, box-shadow .15s ease;
+    }
+
+    #rentalScreen .card:active{
+        transform:scale(.98);
+        box-shadow:0 3px 9px rgba(0,0,0,.08);
+    }
+
+    #rentalScreen .card h2{
+        margin:0 0 10px;
+        min-height:42px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:5px;
+        text-align:center;
+        font-size:17px;
+        line-height:1.15;
+        color:#1565c0;
+    }
+
+    #rentalScreen .rental-grid{
+        grid-template-columns:1fr;
+        gap:7px;
+        margin-top:auto;
+    }
+
+    #rentalScreen .rental-item{
+        min-height:42px;
+        padding:9px 7px;
+        border-width:2px;
+        border-radius:12px;
+        text-align:center;
+        box-shadow:none;
+    }
+
+    #rentalScreen .rental-item h3{
+        margin:0;
+        font-size:14px;
+    }
+
+    #rentalScreen .timer{
+        font-size:17px;
+    }
+
+    /* Крупные кнопки цен внутри категорий */
+    #rentalScreen .price{
+        min-height:44px;
+        padding:10px 8px;
+        font-size:15px;
+        border-radius:12px;
+    }
+
+    /* Нижнее меню */
+    .bottom-nav{
+        left:8px;
+        right:8px;
+        bottom:8px;
+        height:70px;
+        border-radius:20px;
+    }
+
+    .nav-btn{
+        font-size:12px;
+    }
+
+    .nav-btn .icon{
+        font-size:23px;
+    }
+
+    .nav-btn.active .icon{
+        width:40px;
+        height:40px;
+    }
 }
 
-.quantity-controls{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:18px;
-    margin-top:8px;
-    padding:8px;
-    background:#f6f6f6;
-    border-radius:14px;
-}
+/* Очень маленькие телефоны */
+@media (max-width:380px){
 
-.qty-btn{
-    width:52px;
-    height:52px;
-    padding:0;
-    border-radius:14px;
-    background:linear-gradient(135deg,#FFD54F,#FFC107);
-    color:#111;
-    font-size:28px;
-    line-height:1;
-}
+    #rentalScreen{
+        gap:9px;
+    }
 
-.qty-btn:hover{
-    transform:scale(1.05);
-}
+    #rentalScreen .card{
+        min-height:122px;
+        padding:12px 7px 10px;
+        border-radius:17px;
+    }
 
-.quantity-value{
-    min-width:45px;
-    text-align:center;
-    font-size:24px;
-    font-weight:700;
-    color:#1565C0;
+    #rentalScreen .card h2{
+        font-size:15px;
+    }
+
+    #rentalScreen .rental-item h3{
+        font-size:13px;
+    }
+
 }
