@@ -711,3 +711,45 @@ body{
 .status-free{
     color:#4CAF50;
 }
+
+/* ===============================
+   КОЛИЧЕСТВО БАТУТОВ И ТЮБИНГОВ
+==================================*/
+
+.quantity-block{
+    margin-top:15px;
+}
+
+.quantity-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    margin-top:8px;
+    padding:8px;
+    background:#f6f6f6;
+    border-radius:14px;
+}
+
+.qty-btn{
+    width:52px;
+    height:52px;
+    padding:0;
+    border-radius:14px;
+    background:linear-gradient(135deg,#FFD54F,#FFC107);
+    color:#111;
+    font-size:28px;
+    line-height:1;
+}
+
+.qty-btn:hover{
+    transform:scale(1.05);
+}
+
+.quantity-value{
+    min-width:45px;
+    text-align:center;
+    font-size:24px;
+    font-weight:700;
+    color:#1565C0;
+}
