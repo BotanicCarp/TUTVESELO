@@ -72,6 +72,14 @@ const activeRentals = {};
 
 let isStartingRent = false;
 
+// Количество для батутов и тюбингов
+let rentalQuantity = 1;
+
+const quantityTypes = [
+    "trampolines",
+    "tubes"
+];
+
 const rentalsRef = collection(db, "rentals");
 onSnapshot(rentalsRef, (snapshot) => {
 
@@ -159,6 +167,9 @@ function openRental(name, type) {
     document.getElementById("modalTitle").textContent = name;
     document.getElementById("clientName").value = "";
 
+    rentalQuantity = 1;
+    updateQuantityUI();
+
     const timeSelect = document.getElementById("rentTime");
     timeSelect.innerHTML = "";
 
@@ -180,7 +191,6 @@ function updatePrice() {
     if (!currentRental) return;
 
     const minutes = Number(document.getElementById("rentTime").value);
-
     const config = rentalConfig[currentRental.type];
 
     let price = 0;
@@ -197,9 +207,49 @@ function updatePrice() {
 
     }
 
+    // Для батутов и тюбингов цена умножается на количество.
+    if (quantityTypes.includes(currentRental.type)) {
+        price *= rentalQuantity;
+    }
+
     document.getElementById("rentPrice").textContent =
         price.toLocaleString() + " ₸";
 }
+
+function updateQuantityUI() {
+
+    const block = document.getElementById("quantityBlock");
+    const value = document.getElementById("quantityValue");
+
+    if (!currentRental || !quantityTypes.includes(currentRental.type)) {
+        block.style.display = "none";
+        return;
+    }
+
+    block.style.display = "block";
+    value.textContent = rentalQuantity;
+}
+
+document.getElementById("qtyMinus").addEventListener("click", () => {
+
+    if (rentalQuantity > 1) {
+        rentalQuantity--;
+        updateQuantityUI();
+        updatePrice();
+    }
+
+});
+
+document.getElementById("qtyPlus").addEventListener("click", () => {
+
+    if (rentalQuantity < 10) {
+        rentalQuantity++;
+        updateQuantityUI();
+        updatePrice();
+    }
+
+});
+
 document
     .getElementById("rentTime")
     .addEventListener("change", updatePrice);
@@ -335,7 +385,8 @@ function refreshMultiRental(name){
         html += `
             <div style="margin-bottom:8px">
 
-                <b>${client.client}</b><br>
+                <b>${client.client || "Без имени"}</b>
+                ${client.quantity > 1 ? `<b> × ${client.quantity}</b>` : ""}<br>
 
                 ${diff>=0 ? "🟡" : "🔴"}
 
@@ -425,6 +476,10 @@ const endTime = startTime + minutes * 60000;
 currentRental.client = client;
 currentRental.minutes = minutes;
 currentRental.payment = payment;
+currentRental.quantity =
+    quantityTypes.includes(currentRental.type)
+        ? rentalQuantity
+        : 1;
 currentRental.price = price;
 currentRental.startTime = startTime;
 currentRental.endTime = endTime;
@@ -435,6 +490,7 @@ const rentalData = {
     client: currentRental.client,
     minutes: currentRental.minutes,
     payment: currentRental.payment,
+    quantity: currentRental.quantity,
     price: currentRental.price,
 
     startTime: currentRental.startTime,
