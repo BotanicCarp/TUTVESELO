@@ -782,33 +782,6 @@ body{
         font-size:17px;
     }
 
-    /* Стрелка справа — визуально показывает, что карточка открывается */
-    #rentalScreen .card::after{
-        content:"›";
-        position:absolute;
-        right:18px;
-        top:50%;
-        transform:translateY(-50%);
-        width:34px;
-        height:34px;
-        border-radius:50%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background:#fff8d6;
-        color:#1565c0;
-        font-size:30px;
-        font-weight:400;
-        line-height:1;
-    }
-
-    /* Не показываем стрелку на карточках, если внутри уже отображается активная аренда */
-    #rentalScreen .card:has(.rental-item.busy)::after,
-    #rentalScreen .card:has(.rental-item.finished)::after{
-        content:"";
-        background:transparent;
-    }
-
     /* Компактная шапка */
     .header{
         border-radius:22px;
@@ -880,13 +853,6 @@ body{
 
     #rentalScreen .card h2{
         font-size:17px;
-    }
-
-    #rentalScreen .card::after{
-        right:14px;
-        width:31px;
-        height:31px;
-        font-size:27px;
     }
 }
 
@@ -992,5 +958,154 @@ body.dark-theme .theme-toggle{
         padding:9px 13px;
         font-size:13px;
         border-radius:12px;
+    }
+}
+
+
+/* =========================================================
+   СТАТУСЫ АРЕНДЫ — СРАЗУ ВИДНО СОСТОЯНИЕ
+========================================================= */
+
+.rental-item .status-free,
+.rental-item .status-busy,
+.rental-item .status-over{
+    margin-top:12px;
+    padding:12px;
+    border-radius:14px;
+    text-align:center;
+    font-weight:800;
+}
+
+.rental-item .status-free{
+    color:#2e7d32;
+    background:#e8f5e9;
+}
+
+.rental-item .status-busy{
+    color:#e65100;
+    background:#fff3e0;
+}
+
+.rental-item .status-over{
+    color:#c62828;
+    background:#ffebee;
+}
+
+/* Активная аренда — таймер главный элемент */
+.rental-item .status-busy br:first-of-type,
+.rental-item .status-over br:first-of-type{
+    display:none;
+}
+
+.rental-item .status-busy,
+.rental-item .status-over{
+    font-size:15px;
+}
+
+.rental-item .status-busy,
+.rental-item .status-over{
+    line-height:1.35;
+}
+
+/* Большой таймер */
+.rental-item .status-busy::first-line,
+.rental-item .status-over::first-line{
+    font-size:15px;
+}
+
+/* Кнопка «Сдать» */
+.rental-item .finishRent{
+    margin-top:8px;
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    background:#43a047;
+    color:#fff;
+    font-size:15px;
+    font-weight:800;
+    box-shadow:none;
+}
+
+.rental-item .finishRent:hover{
+    background:#2e7d32;
+    transform:none;
+    box-shadow:none;
+}
+
+/* Тёмная тема */
+body.dark-theme .rental-item .status-free{
+    color:#81c784;
+    background:#16351b;
+}
+
+body.dark-theme .rental-item .status-busy{
+    color:#ffb74d;
+    background:#3a2916;
+}
+
+body.dark-theme .rental-item .status-over{
+    color:#ef9a9a;
+    background:#3b1919;
+}
+
+body.dark-theme .rental-item .finishRent{
+    background:#43a047;
+    color:#fff;
+}
+
+@media(max-width:768px){
+
+    #rentalScreen .card{
+        min-height:0;
+        padding:14px;
+        margin-bottom:12px;
+    }
+
+    #rentalScreen .card h2{
+        margin-bottom:12px;
+        font-size:19px;
+    }
+
+    #rentalScreen .rental-grid{
+        gap:10px;
+    }
+
+    #rentalScreen .rental-item{
+        min-height:100px;
+        padding:14px;
+        border-width:2px;
+        border-radius:16px;
+    }
+
+    #rentalScreen .rental-item h3{
+        font-size:16px;
+        margin-bottom:8px;
+    }
+
+    #rentalScreen .rental-item .status-free,
+    #rentalScreen .rental-item .status-busy,
+    #rentalScreen .rental-item .status-over{
+        margin-top:8px;
+        padding:11px;
+    }
+
+    #rentalScreen .rental-item .finishRent{
+        min-height:44px;
+        margin-top:8px;
+        padding:10px;
+    }
+
+}
+
+/* Очень маленькие телефоны */
+@media(max-width:380px){
+
+    #rentalScreen .rental-item{
+        padding:12px;
+        border-radius:15px;
+    }
+
+    #rentalScreen .rental-item h3{
+        font-size:15px;
     }
 }
