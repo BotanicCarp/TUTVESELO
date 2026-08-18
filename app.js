@@ -144,6 +144,64 @@ window.addSale = async function ({
 };
 
 // ==============================
+// Дата и время в шапке
+// ==============================
+
+function updateHeaderDateTime() {
+    const now = new Date();
+
+    const dateElement = document.getElementById("currentDate");
+    const timeElement = document.getElementById("currentTime");
+
+    if (!dateElement || !timeElement) return;
+
+    dateElement.textContent = now.toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+
+    timeElement.textContent = now.toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+}
+
+updateHeaderDateTime();
+setInterval(updateHeaderDateTime, 1000);
+
+
+// ==============================
+// Тёмная тема
+// ==============================
+
+const themeToggle = document.getElementById("themeToggle");
+
+function updateThemeButton() {
+    if (!themeToggle) return;
+    themeToggle.textContent = document.body.classList.contains("dark-theme")
+        ? "☀️ Светлая тема"
+        : "🌙 Тёмная тема";
+}
+
+if (localStorage.getItem("kassaTheme") === "dark") {
+    document.body.classList.add("dark-theme");
+}
+
+updateThemeButton();
+
+themeToggle?.addEventListener("click", () => {
+    document.body.classList.toggle("dark-theme");
+    localStorage.setItem(
+        "kassaTheme",
+        document.body.classList.contains("dark-theme") ? "dark" : "light"
+    );
+    updateThemeButton();
+});
+
+
+// ==============================
 // Меню
 // ==============================
 

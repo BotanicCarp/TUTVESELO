@@ -889,3 +889,108 @@ body{
         font-size:27px;
     }
 }
+
+
+/* =========================================================
+   ТЁМНАЯ ТЕМА
+========================================================= */
+
+body.dark-theme{
+    color:#f2f2f2;
+    background:radial-gradient(circle at top,#242424 0%,#171717 48%,#101010 100%);
+}
+
+body.dark-theme .header{
+    background:linear-gradient(135deg,#4a3a00,#241d00);
+    box-shadow:0 15px 35px rgba(0,0,0,.45);
+}
+body.dark-theme .header h1{color:#fff;}
+body.dark-theme .header p{color:#d6d6d6;}
+body.dark-theme .header-datetime{background:rgba(255,255,255,.10);color:#fff;}
+
+body.dark-theme .card{
+    background:#1e1e1e;
+    color:#f2f2f2;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+body.dark-theme .card h2{color:#FFD54F;}
+
+body.dark-theme .pay{
+    background:#292929;
+    color:#eee;
+}
+body.dark-theme .pay.active{
+    background:linear-gradient(135deg,#FFD54F,#FFC107);
+    color:#111;
+}
+
+body.dark-theme .stats div{
+    background:#292929;
+    color:#eee;
+}
+body.dark-theme .stats strong{color:#FFD54F;}
+body.dark-theme .stats .full{
+    background:linear-gradient(135deg,#5a4700,#8a6b00);
+    color:#fff;
+}
+body.dark-theme .stats .full strong{color:#fff;}
+
+body.dark-theme .history-item{
+    background:#292929;
+    color:#eee;
+    box-shadow:0 5px 15px rgba(0,0,0,.30);
+}
+body.dark-theme .history-group{color:#FFD54F;}
+
+body.dark-theme .rental-item{
+    background:#292929;
+    color:#eee;
+    box-shadow:0 5px 15px rgba(0,0,0,.30);
+}
+
+body.dark-theme .modal{background:rgba(0,0,0,.75);}
+body.dark-theme .modal-content{background:#202020;color:#eee;}
+body.dark-theme .modal-content input,
+body.dark-theme .modal-content select{
+    background:#2b2b2b;
+    color:#fff;
+    border-color:#555;
+}
+body.dark-theme .rent-price{background:#2b2b2b;color:#FFD54F;}
+
+body.dark-theme .bottom-nav{
+    background:#1f1f1f;
+    box-shadow:0 12px 30px rgba(0,0,0,.5);
+}
+body.dark-theme .nav-btn{color:#999;}
+body.dark-theme .nav-btn.active{color:#fff;}
+
+.theme-toggle{
+    margin-top:14px;
+    padding:10px 16px;
+    border-radius:14px;
+    background:rgba(255,255,255,.38);
+    color:#111;
+    border:1px solid rgba(0,0,0,.08);
+    font-size:14px;
+    font-weight:700;
+    box-shadow:none;
+}
+.theme-toggle:hover{
+    transform:none;
+    box-shadow:none;
+}
+body.dark-theme .theme-toggle{
+    background:rgba(0,0,0,.35);
+    color:#fff;
+    border-color:rgba(255,255,255,.18);
+}
+
+@media(max-width:768px){
+    .theme-toggle{
+        margin-top:10px;
+        padding:9px 13px;
+        font-size:13px;
+        border-radius:12px;
+    }
+}
